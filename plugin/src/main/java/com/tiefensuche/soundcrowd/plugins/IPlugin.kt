@@ -4,18 +4,13 @@
 
 package com.tiefensuche.soundcrowd.plugins
 
-import android.content.Context
 import com.tiefensuche.soundcrowd.extensions.UrlResolver
 import org.json.JSONArray
 
+/**
+ * Plugin interface for soundcrowd addons
+ */
 interface IPlugin : UrlResolver {
-
-    /**
-     * Initialization function for the plugin
-     *
-     * @param context context of the main activity
-     */
-    fun init(context: Context)
 
     /**
      * The name of the plugin, it will be displayed in the UI
