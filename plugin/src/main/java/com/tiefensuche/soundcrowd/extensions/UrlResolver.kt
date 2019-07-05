@@ -5,6 +5,7 @@
 package com.tiefensuche.soundcrowd.extensions
 
 import com.tiefensuche.soundcrowd.plugins.Callback
+import org.json.JSONObject
 
 interface UrlResolver {
 
@@ -12,5 +13,5 @@ interface UrlResolver {
      * Resolve media item url to the actual stream url, in case it is necessary
      */
     @Throws(Exception::class)
-    fun getMediaUrl(url: String, callback: Callback<String>)
+    fun getMediaUrl(metadata: JSONObject, callback: Callback<JSONObject>)
 }
