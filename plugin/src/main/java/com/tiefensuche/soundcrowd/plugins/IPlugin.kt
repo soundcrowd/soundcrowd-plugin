@@ -4,6 +4,7 @@
 
 package com.tiefensuche.soundcrowd.plugins
 
+import android.graphics.Bitmap
 import com.tiefensuche.soundcrowd.extensions.UrlResolver
 import org.json.JSONArray
 
@@ -26,6 +27,18 @@ interface IPlugin : UrlResolver {
      * @return list of media categories
      */
     fun mediaCategories(): List<String>
+
+    /**
+     * JSONArray that consists of preferences encoded in JSONObjects. A preference in JSONObject
+     * consists of key/value pairs of following keys:
+     *
+     * - key: the key under which the option is stored
+     * - name: the display name of the option
+     * - description: a short description of the option
+     *
+     * @return JSONArray with encoded preferences
+     */
+    fun preferences(): JSONArray
 
     /**
      * Request to get media items for one of the supported [.mediaCategories].
@@ -64,4 +77,11 @@ interface IPlugin : UrlResolver {
      */
     @Throws(Exception::class)
     fun getMediaItems(mediaCategory: String, path: String, query: String, callback: Callback<JSONArray>)
+
+    /**
+     * Returns a bitmap that represents the plugin
+     *
+     * @return bitmap with plugin icon
+     */
+    fun getIcon(): Bitmap
 }
