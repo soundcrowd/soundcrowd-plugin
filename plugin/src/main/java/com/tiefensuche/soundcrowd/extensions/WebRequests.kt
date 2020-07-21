@@ -11,28 +11,34 @@ import javax.net.ssl.HttpsURLConnection
 
 object WebRequests {
 
-    private const val USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"
     @get:Synchronized
     @set:Synchronized
     var cookies = ""
 
+    class Response(val status : Int, val value : String)
+
     /**
-     * Download (via HTTP) the text file located at the supplied URL, and return its contents.
-     * Primarily intended for downloading web pages.
+     * Request an URL via get and return its content
      *
-     * @param siteUrl the URL of the text file to download
+     * @param url the url to request via get
      * @return the contents of the specified text file
      */
     @Throws(IOException::class)
-    fun get(siteUrl: String): String {
-        return request(createConnection(siteUrl))
+    fun get(url: String): Response {
+        return request(createConnection(url))
     }
 
-    fun post(siteUrl: String, content: String): String {
+    fun post(siteUrl: String, content: String): Response {
         val con = createConnection(siteUrl)
         con.doOutput = true
         con.requestMethod = "POST"
         con.outputStream.write(content.toByteArray())
+        return request(con)
+    }
+
+    fun request(siteUrl: String, method: String): Response {
+        val con = createConnection(siteUrl)
+        con.requestMethod = method
         return request(con)
     }
 
@@ -41,7 +47,6 @@ object WebRequests {
         val con = URL(url).openConnection() as? HttpsURLConnection ?: throw IOException()
         con.connectTimeout = 30 * 1000 // 30s
         con.readTimeout = 30 * 1000 // 30s
-        con.setRequestProperty("User-Agent", USER_AGENT)
 
         if (cookies.isNotEmpty()) {
             con.setRequestProperty("Cookie", cookies)
@@ -50,13 +55,10 @@ object WebRequests {
         return con
     }
 
-    /**
-     * Common functionality between download(String url) and download(String url, String language)
-     */
     @Throws(HttpException::class)
-    fun request(con: HttpsURLConnection): String {
+    fun request(con: HttpsURLConnection): Response {
         if (con.responseCode < 400) {
-            return con.inputStream.bufferedReader().use(BufferedReader::readText)
+            return Response(con.responseCode, con.inputStream.bufferedReader().use(BufferedReader::readText))
         } else {
             throw HttpException(con.responseCode, con.errorStream.bufferedReader().use(BufferedReader::readText))
         }
