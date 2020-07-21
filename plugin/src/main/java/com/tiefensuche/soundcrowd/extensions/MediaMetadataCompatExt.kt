@@ -5,6 +5,7 @@
 package com.tiefensuche.soundcrowd.extensions
 
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.RatingCompat
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -13,6 +14,8 @@ import org.json.JSONObject
  */
 object MediaMetadataCompatExt {
 
+    const val METADATA_KEY_URL = "URL"
+    const val METADATA_KEY_FAVORITE = "FAVORITE"
     const val METADATA_KEY_DOWNLOAD_URL = "DOWNLOAD_URL"
     const val METADATA_KEY_WAVEFORM_URL = "WAVEFORM_URL"
     const val METADATA_KEY_TYPE = "TYPE"
@@ -35,6 +38,7 @@ object MediaMetadataCompatExt {
                 is String -> builder.putString(key, value)
                 is Long -> builder.putLong(key, value)
                 is Int -> builder.putLong(key, value.toLong())
+                is Boolean -> builder.putRating(key, RatingCompat.newHeartRating(value))
             }
         }
         return builder.build()

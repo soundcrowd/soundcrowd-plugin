@@ -82,6 +82,16 @@ interface IPlugin : UrlResolver {
     fun getMediaItems(mediaCategory: String, path: String, query: String, callback: Callback<JSONArray>, refresh: Boolean = false)
 
     /**
+     * Request to toggle favorite status for a given id.
+     *
+     * @param id media id
+     * @param callback callback with status
+     * @throws Exception any type of exceptions that can occur for the request in the plugin
+     */
+    @Throws(Exception::class)
+    fun favorite(id: String, callback: Callback<Boolean>)
+
+    /**
      * Returns a bitmap that represents the plugin
      *
      * @return bitmap with plugin icon
