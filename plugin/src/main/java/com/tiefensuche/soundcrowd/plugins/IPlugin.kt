@@ -47,10 +47,11 @@ interface IPlugin : UrlResolver {
      *
      * @param mediaCategory one of [.mediaCategories]
      * @param callback callback with the results
+     * @param refresh reset state and perform a new query
      * @throws Exception any type of exceptions that can occur for the request in the plugin
      */
     @Throws(Exception::class)
-    fun getMediaItems(mediaCategory: String, callback: Callback<JSONArray>)
+    fun getMediaItems(mediaCategory: String, callback: Callback<JSONArray>, refresh: Boolean = false)
 
     /**
      * Request to get media items for one of the supported [.mediaCategories] at the given path.
@@ -60,10 +61,11 @@ interface IPlugin : UrlResolver {
      * @param mediaCategory one of [.mediaCategories]
      * @param path path in the category
      * @param callback callback with the results
+     * @param refresh reset state and perform a new query
      * @throws Exception any type of exceptions that can occur for the request in the plugin
      */
     @Throws(Exception::class)
-    fun getMediaItems(mediaCategory: String, path: String, callback: Callback<JSONArray>)
+    fun getMediaItems(mediaCategory: String, path: String, callback: Callback<JSONArray>, refresh: Boolean = false)
 
     /**
      * Request to query media items in the given path for the given search string.
@@ -73,10 +75,11 @@ interface IPlugin : UrlResolver {
      * @param path path in the category
      * @param query search string
      * @param callback callback with the results
+     * @param refresh reset state and perform a new query
      * @throws Exception any type of exceptions that can occur for the request in the plugin
      */
     @Throws(Exception::class)
-    fun getMediaItems(mediaCategory: String, path: String, query: String, callback: Callback<JSONArray>)
+    fun getMediaItems(mediaCategory: String, path: String, query: String, callback: Callback<JSONArray>, refresh: Boolean = false)
 
     /**
      * Returns a bitmap that represents the plugin
