@@ -20,7 +20,6 @@ object MediaMetadataCompatExt {
     const val METADATA_KEY_WAVEFORM_URL = "WAVEFORM_URL"
     const val METADATA_KEY_TYPE = "TYPE"
     const val METADATA_KEY_SOURCE = "SOURCE"
-    const val METADATA_KEY_PREFERENCES = "PREFERENCES"
 
     // values for METADATA_KEY_TYPE
     enum class MediaType {
@@ -33,8 +32,7 @@ object MediaMetadataCompatExt {
         val keys = json.keys()
         while (keys.hasNext()) {
             val key = keys.next()
-            val value = json.get(key)
-            when (value) {
+            when (val value = json.get(key)) {
                 is String -> builder.putString(key, value)
                 is Long -> builder.putLong(key, value)
                 is Int -> builder.putLong(key, value.toLong())
