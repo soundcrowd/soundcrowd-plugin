@@ -23,7 +23,6 @@ import org.json.JSONObject
 open class MetadataDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private var TAG = this::class.java.simpleName
         private const val DATABASE_NAME = "SoundCrowd"
         private const val DATABASE_VERSION = 2
 
@@ -39,17 +38,6 @@ open class MetadataDatabase(context: Context) : SQLiteOpenHelper(context, DATABA
         const val DATABASE_MEDIA_ITEMS_NAME = "MediaItems"
 
         private const val DATABASE_MEDIA_ITEMS_CREATE = "create table if not exists $DATABASE_MEDIA_ITEMS_NAME ($ID text primary key, $ARTIST text not null, $TITLE text not null, $DURATION long not null, $SOURCE text not null unique, $DOWNLOAD text unique, $ALBUM_ART_URL text not null, $WAVEFORM_URL text);"
-
-        var instance: MetadataDatabase? = null
-
-        fun getInstance(context: Context): MetadataDatabase {
-            var instance = instance
-            if (instance == null) {
-                instance = MetadataDatabase(context)
-                this.instance = instance
-            }
-            return instance
-        }
     }
 
     init {
@@ -57,23 +45,19 @@ open class MetadataDatabase(context: Context) : SQLiteOpenHelper(context, DATABA
     }
 
     fun addMediaItem(item: MediaMetadataCompat) {
-        addMediaItem(MediaMetadataCompatExt.toJSON(item))
-    }
-
-    fun addMediaItem(item: JSONObject) {
-        val values = ContentValues()
-        val mediaId = item.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
-        values.put(ID, mediaId.substring(mediaId.indexOf('|') + 1))
-        values.put(SOURCE, item.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI))
-        values.put(ARTIST, item.getString(MediaMetadataCompat.METADATA_KEY_ARTIST))
-        values.put(ALBUM_ART_URL, item.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI))
-        values.put(TITLE, item.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
-        values.put(WAVEFORM_URL, if (item.has(MediaMetadataCompatExt.METADATA_KEY_WAVEFORM_URL)) item.getString(MediaMetadataCompatExt.METADATA_KEY_WAVEFORM_URL) else "")
-        values.put(DURATION, item.getLong(MediaMetadataCompat.METADATA_KEY_DURATION))
         try {
+            val values = ContentValues()
+            val mediaId = item.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
+            values.put(ID, mediaId.substring(mediaId.indexOf('|') + 1))
+            values.put(SOURCE, item.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI))
+            values.put(ARTIST, item.getString(MediaMetadataCompat.METADATA_KEY_ARTIST))
+            values.put(ALBUM_ART_URL, item.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI))
+            values.put(TITLE, item.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
+            values.put(WAVEFORM_URL, if (item.containsKey(MediaMetadataCompatExt.METADATA_KEY_WAVEFORM_URL)) item.getString(MediaMetadataCompatExt.METADATA_KEY_WAVEFORM_URL) else "")
+            values.put(DURATION, item.getLong(MediaMetadataCompat.METADATA_KEY_DURATION))
             writableDatabase.insertOrThrow(DATABASE_MEDIA_ITEMS_NAME, null, values)
-        } catch (e: SQLException) {
-            Log.d(TAG, "value=$values", e)
+        } catch (e: Exception) {
+            // ignore
         }
     }
 
