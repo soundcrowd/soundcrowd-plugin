@@ -28,17 +28,22 @@ object WebRequests {
         return request(createConnection(url))
     }
 
-    fun post(siteUrl: String, content: String): Response {
-        val con = createConnection(siteUrl)
+    fun post(url: String, data: String): Response {
+        val con = createConnection(url)
         con.doOutput = true
         con.requestMethod = "POST"
-        con.outputStream.write(content.toByteArray())
+        con.outputStream.write(data.toByteArray())
         return request(con)
     }
 
-    fun request(siteUrl: String, method: String): Response {
-        val con = createConnection(siteUrl)
+    fun request(url: String, method: String, headers: Map<String, String>? = null): Response {
+        val con = createConnection(url)
         con.requestMethod = method
+        if (headers != null) {
+            for ((k,v) in headers) {
+                con.setRequestProperty(k, v)
+            }
+        }
         return request(con)
     }
 
