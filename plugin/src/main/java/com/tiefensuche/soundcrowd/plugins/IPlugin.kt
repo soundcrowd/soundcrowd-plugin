@@ -98,4 +98,6 @@ interface IPlugin : UrlResolver {
      * @return bitmap with plugin icon
      */
     fun getIcon(): Bitmap
+
+    fun callbacks(): Map<String, (callback: String) -> Unit>
 }
