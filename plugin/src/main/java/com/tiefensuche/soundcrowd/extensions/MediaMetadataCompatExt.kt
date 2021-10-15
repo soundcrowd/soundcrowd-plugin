@@ -25,28 +25,4 @@ object MediaMetadataCompatExt {
     enum class MediaType {
         MEDIA, COLLECTION, STREAM
     }
-
-    @Throws(JSONException::class)
-    fun fromJson(json: JSONObject): MediaMetadataCompat {
-        val builder = MediaMetadataCompat.Builder()
-        val keys = json.keys()
-        while (keys.hasNext()) {
-            val key = keys.next()
-            when (val value = json.get(key)) {
-                is String -> builder.putString(key, value)
-                is Long -> builder.putLong(key, value)
-                is Int -> builder.putLong(key, value.toLong())
-                is Boolean -> builder.putRating(key, RatingCompat.newHeartRating(value))
-            }
-        }
-        return builder.build()
-    }
-
-    fun toJSON(metadata: MediaMetadataCompat): JSONObject {
-        val json = JSONObject()
-        metadata.keySet().forEach { key ->
-            json.put(key, metadata.bundle.get(key))
-        }
-        return json
-    }
 }
