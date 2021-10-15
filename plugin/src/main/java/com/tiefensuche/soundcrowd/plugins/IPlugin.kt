@@ -19,7 +19,7 @@ interface IPlugin : UrlResolver {
      *
      * @return plugin name
      */
-    fun name(): String
+    fun name(): String = "Unnamed"
 
     /**
      * List of media categories of the plugin, each category will add a new entry in the addons
@@ -27,7 +27,7 @@ interface IPlugin : UrlResolver {
      *
      * @return list of media categories
      */
-    fun mediaCategories(): List<String>
+    fun mediaCategories(): List<String> = emptyList()
 
     /**
      * JSONArray that consists of preferences encoded in JSONObjects. A preference in JSONObject
@@ -39,7 +39,7 @@ interface IPlugin : UrlResolver {
      *
      * @return JSONArray with encoded preferences
      */
-    fun preferences(): List<Preference>
+    fun preferences(): List<Preference> = emptyList()
 
     /**
      * Request to get media items for one of the supported [.mediaCategories].
@@ -52,7 +52,9 @@ interface IPlugin : UrlResolver {
      * @throws Exception any type of exceptions that can occur for the request in the plugin
      */
     @Throws(Exception::class)
-    fun getMediaItems(mediaCategory: String, callback: Callback<List<MediaMetadataCompat>>, refresh: Boolean = false)
+    fun getMediaItems(mediaCategory: String, callback: Callback<List<MediaMetadataCompat>>, refresh: Boolean = false) {
+        callback.onResult(emptyList())
+    }
 
     /**
      * Request to get media items for one of the supported [.mediaCategories] at the given path.
@@ -66,7 +68,9 @@ interface IPlugin : UrlResolver {
      * @throws Exception any type of exceptions that can occur for the request in the plugin
      */
     @Throws(Exception::class)
-    fun getMediaItems(mediaCategory: String, path: String, callback: Callback<List<MediaMetadataCompat>>, refresh: Boolean = false)
+    fun getMediaItems(mediaCategory: String, path: String, callback: Callback<List<MediaMetadataCompat>>, refresh: Boolean = false) {
+        callback.onResult(emptyList())
+    }
 
     /**
      * Request to query media items in the given path for the given search string.
@@ -80,7 +84,9 @@ interface IPlugin : UrlResolver {
      * @throws Exception any type of exceptions that can occur for the request in the plugin
      */
     @Throws(Exception::class)
-    fun getMediaItems(mediaCategory: String, path: String, query: String, callback: Callback<List<MediaMetadataCompat>>, refresh: Boolean = false)
+    fun getMediaItems(mediaCategory: String, path: String, query: String, callback: Callback<List<MediaMetadataCompat>>, refresh: Boolean = false) {
+        callback.onResult(emptyList())
+    }
 
     /**
      * Request to toggle favorite status for a given id.
@@ -90,7 +96,9 @@ interface IPlugin : UrlResolver {
      * @throws Exception any type of exceptions that can occur for the request in the plugin
      */
     @Throws(Exception::class)
-    fun favorite(id: String, callback: Callback<Boolean>)
+    fun favorite(id: String, callback: Callback<Boolean>) {
+        callback.onResult(false)
+    }
 
     /**
      * Returns a bitmap that represents the plugin
@@ -99,5 +107,5 @@ interface IPlugin : UrlResolver {
      */
     fun getIcon(): Bitmap
 
-    fun callbacks(): Map<String, (callback: String) -> Unit>
+    fun callbacks(): Map<String, (callback: String) -> Unit> = emptyMap()
 }
