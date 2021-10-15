@@ -6,14 +6,10 @@ package com.tiefensuche.soundcrowd.database
 
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
-import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.support.v4.media.MediaMetadataCompat
-import android.util.Log
 import com.tiefensuche.soundcrowd.extensions.MediaMetadataCompatExt
-import org.json.JSONObject
 
 /**
  * Database that stores media items, metadata, and [CuePoint] items
@@ -61,26 +57,21 @@ open class MetadataDatabase(context: Context) : SQLiteOpenHelper(context, DATABA
         }
     }
 
-    fun getMediaItem(mediaId: String): JSONObject? {
+    fun getMediaItem(mediaId: String): MediaMetadataCompat? {
         val cursor = readableDatabase.query(DATABASE_MEDIA_ITEMS_NAME, null, "$ID=?", arrayOf(mediaId), null, null, null, null)
-        if (cursor.moveToFirst()) {
-            return buildItem(cursor)
+        if (!cursor.moveToFirst()) {
+            return null
         }
-        return null
-    }
-
-    private fun buildItem(cursor: Cursor): JSONObject {
-        val json = JSONObject()
-        json.put(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, cursor.getString(cursor.getColumnIndex(ID)))
-                .put(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, cursor.getString(cursor.getColumnIndex(SOURCE)))
-                .put(MediaMetadataCompat.METADATA_KEY_ARTIST, cursor.getString(cursor.getColumnIndex(ARTIST)))
-                .put(MediaMetadataCompat.METADATA_KEY_DURATION, cursor.getLong(cursor.getColumnIndex(DURATION)))
-                .put(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, cursor.getString(cursor.getColumnIndex(ALBUM_ART_URL)))
-                .put(MediaMetadataCompat.METADATA_KEY_TITLE, cursor.getString(cursor.getColumnIndex(TITLE)))
-                .put(MediaMetadataCompatExt.METADATA_KEY_WAVEFORM_URL, cursor.getString(cursor.getColumnIndex(WAVEFORM_URL)))
-                .put(MediaMetadataCompatExt.METADATA_KEY_SOURCE, "Cache")
-                .put(MediaMetadataCompatExt.METADATA_KEY_TYPE, MediaMetadataCompatExt.MediaType.MEDIA.name)
-        return json
+        return MediaMetadataCompat.Builder()
+            .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, cursor.getString(cursor.getColumnIndex(ID)))
+            .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, cursor.getString(cursor.getColumnIndex(SOURCE)))
+            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, cursor.getString(cursor.getColumnIndex(ARTIST)))
+            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, cursor.getLong(cursor.getColumnIndex(DURATION)))
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, cursor.getString(cursor.getColumnIndex(ALBUM_ART_URL)))
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, cursor.getString(cursor.getColumnIndex(TITLE)))
+            .putString(MediaMetadataCompatExt.METADATA_KEY_WAVEFORM_URL, cursor.getString(cursor.getColumnIndex(WAVEFORM_URL)))
+            .putString(MediaMetadataCompatExt.METADATA_KEY_TYPE, MediaMetadataCompatExt.MediaType.MEDIA.name)
+            .build()
     }
 
     override fun onCreate(sqLiteDatabase: SQLiteDatabase) {
