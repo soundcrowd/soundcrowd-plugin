@@ -6,8 +6,8 @@ package com.tiefensuche.soundcrowd.plugins
 
 import android.graphics.Bitmap
 import android.support.v4.media.MediaMetadataCompat
+import androidx.preference.Preference
 import com.tiefensuche.soundcrowd.extensions.UrlResolver
-import org.json.JSONArray
 
 /**
  * Plugin interface for soundcrowd addons
@@ -39,7 +39,7 @@ interface IPlugin : UrlResolver {
      *
      * @return JSONArray with encoded preferences
      */
-    fun preferences(): JSONArray
+    fun preferences(): List<Preference>
 
     /**
      * Request to get media items for one of the supported [.mediaCategories].

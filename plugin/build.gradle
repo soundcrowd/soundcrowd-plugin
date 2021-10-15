@@ -28,6 +28,7 @@ dependencies {
     api 'androidx.legacy:legacy-support-v4:1.0.0'
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    api 'androidx.preference:preference-ktx:1.1.1'
 }
 
 repositories {
