@@ -45,6 +45,7 @@ object WebRequests {
     @Throws(IOException::class)
     fun createConnection(url: String): HttpsURLConnection {
         val con = URL(url).openConnection() as? HttpsURLConnection ?: throw IOException()
+        con.instanceFollowRedirects = false
         con.connectTimeout = 30 * 1000 // 30s
         con.readTimeout = 30 * 1000 // 30s
 
