@@ -6,6 +6,7 @@ package com.tiefensuche.soundcrowd.database
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.support.v4.media.MediaMetadataCompat
@@ -20,7 +21,7 @@ open class MetadataDatabase(context: Context) : SQLiteOpenHelper(context, DATABA
 
     companion object {
         private const val DATABASE_NAME = "SoundCrowd"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
 
         const val ARTIST = "artist"
         const val TITLE = "title"
@@ -30,10 +31,11 @@ open class MetadataDatabase(context: Context) : SQLiteOpenHelper(context, DATABA
         const val DOWNLOAD = "download"
         const val ALBUM_ART_URL = "album_art_url"
         const val WAVEFORM_URL = "waveform_url"
+        const val PLUGIN = "plugin"
 
         const val DATABASE_MEDIA_ITEMS_NAME = "MediaItems"
 
-        private const val DATABASE_MEDIA_ITEMS_CREATE = "create table if not exists $DATABASE_MEDIA_ITEMS_NAME ($ID text primary key, $ARTIST text not null, $TITLE text not null, $DURATION long not null, $SOURCE text not null unique, $DOWNLOAD text unique, $ALBUM_ART_URL text not null, $WAVEFORM_URL text);"
+        private const val DATABASE_MEDIA_ITEMS_CREATE = "create table if not exists $DATABASE_MEDIA_ITEMS_NAME ($ID text primary key, $ARTIST text not null, $TITLE text not null, $DURATION long not null, $SOURCE text not null unique, $DOWNLOAD text unique, $ALBUM_ART_URL text not null, $WAVEFORM_URL text, $PLUGIN text);"
     }
 
     init {
@@ -51,6 +53,7 @@ open class MetadataDatabase(context: Context) : SQLiteOpenHelper(context, DATABA
             values.put(TITLE, item.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
             values.put(WAVEFORM_URL, if (item.containsKey(MediaMetadataCompatExt.METADATA_KEY_WAVEFORM_URL)) item.getString(MediaMetadataCompatExt.METADATA_KEY_WAVEFORM_URL) else "")
             values.put(DURATION, item.getLong(MediaMetadataCompat.METADATA_KEY_DURATION))
+            values.put(PLUGIN, item.getString(MediaMetadataCompatExt.METADATA_KEY_SOURCE))
             writableDatabase.insertOrThrow(DATABASE_MEDIA_ITEMS_NAME, null, values)
         } catch (e: Exception) {
             // ignore
@@ -62,6 +65,10 @@ open class MetadataDatabase(context: Context) : SQLiteOpenHelper(context, DATABA
         if (!cursor.moveToFirst()) {
             return null
         }
+        return buildItem(cursor)
+    }
+
+    fun buildItem(cursor: Cursor): MediaMetadataCompat {
         return MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, cursor.getString(cursor.getColumnIndex(ID)))
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, cursor.getString(cursor.getColumnIndex(SOURCE)))
@@ -71,6 +78,7 @@ open class MetadataDatabase(context: Context) : SQLiteOpenHelper(context, DATABA
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, cursor.getString(cursor.getColumnIndex(TITLE)))
             .putString(MediaMetadataCompatExt.METADATA_KEY_WAVEFORM_URL, cursor.getString(cursor.getColumnIndex(WAVEFORM_URL)))
             .putString(MediaMetadataCompatExt.METADATA_KEY_TYPE, MediaMetadataCompatExt.MediaType.MEDIA.name)
+            .putString(MediaMetadataCompatExt.METADATA_KEY_SOURCE, cursor.getString(cursor.getColumnIndex(PLUGIN)))
             .build()
     }
 
@@ -78,7 +86,11 @@ open class MetadataDatabase(context: Context) : SQLiteOpenHelper(context, DATABA
         sqLiteDatabase.execSQL(DATABASE_MEDIA_ITEMS_CREATE)
     }
 
-    override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, i: Int, i1: Int) {
-        // initial schema is up-to-date
+    override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        when (oldVersion) {
+            2 -> {
+                sqLiteDatabase.execSQL("ALTER TABLE $DATABASE_MEDIA_ITEMS_NAME ADD COLUMN $PLUGIN text")
+            }
+        }
     }
 }
