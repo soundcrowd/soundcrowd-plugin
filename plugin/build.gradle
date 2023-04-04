@@ -4,6 +4,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'maven-publish'
 }
 
 android {
@@ -16,10 +17,9 @@ android {
         versionName "0.1"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
         }
     }
 }
@@ -34,4 +34,28 @@ dependencies {
 repositories {
     google()
     mavenCentral()
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = "com.tiefensuche.soundcrowd"
+            artifactId = "plugin"
+            version = "0.1"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/soundcrowd/soundcrowd-plugin")
+            credentials {
+                username = System.getenv("USERNAME")
+                password = System.getenv("TOKEN")
+            }
+        }
+    }
 }
