@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode 1
         versionName "0.1"
     }
@@ -25,12 +25,13 @@ android {
 }
 
 dependencies {
-    api 'androidx.legacy:legacy-support-v4:1.0.0'
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    api 'androidx.preference:preference-ktx:1.2.0'
+    api 'androidx.media:media:1.6.0'
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0"
+    api "org.jetbrains.kotlin:kotlin-reflect:1.7.22"
+    api 'androidx.preference:preference-ktx:1.1.0'
 }
 
 repositories {
+    google()
     mavenCentral()
 }
