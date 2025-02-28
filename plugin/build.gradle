@@ -8,19 +8,21 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
-
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 33
+        namespace 'com.tiefensuche.soundcrowd.plugins'
+        compileSdk 35
+        minSdk 21
+        targetSdk 35
         versionCode 1
         versionName "0.1"
     }
 
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 
