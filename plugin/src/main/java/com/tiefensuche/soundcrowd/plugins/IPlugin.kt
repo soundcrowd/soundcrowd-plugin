@@ -5,9 +5,8 @@
 package com.tiefensuche.soundcrowd.plugins
 
 import android.graphics.Bitmap
-import android.support.v4.media.MediaMetadataCompat
+import androidx.media3.common.MediaItem
 import androidx.preference.Preference
-import com.tiefensuche.soundcrowd.extensions.UrlResolver
 
 /**
  * Plugin interface for soundcrowd addons
@@ -22,12 +21,20 @@ interface IPlugin : UrlResolver {
     fun name(): String = "Unnamed"
 
     /**
-     * List of media categories of the plugin, each category will add a new entry in the addons
+     * List of media categories of the plugin, each category will add a new entry in the plugins
      * section in the UI
      *
      * @return list of media categories
      */
     fun mediaCategories(): List<String> = emptyList()
+
+    /**
+     * List of media search categories of the plugin, each category can be toggled in the search
+     * section of the UI
+     *
+     * @return list of search categories
+     */
+    fun searchCategories(): List<String> = emptyList()
 
     /**
      * JSONArray that consists of preferences encoded in JSONObjects. A preference in JSONObject
@@ -47,13 +54,13 @@ interface IPlugin : UrlResolver {
      * call should return the next items and if there are no more it should return empty results.
      *
      * @param mediaCategory one of [.mediaCategories]
-     * @param callback callback with the results
      * @param refresh reset state and perform a new query
+     * @return List of media item results
      * @throws Exception any type of exceptions that can occur for the request in the plugin
      */
     @Throws(Exception::class)
-    fun getMediaItems(mediaCategory: String, callback: Callback<List<MediaMetadataCompat>>, refresh: Boolean = false) {
-        callback.onResult(emptyList())
+    fun getMediaItems(mediaCategory: String, refresh: Boolean = false): List<MediaItem> {
+        return emptyList()
     }
 
     /**
@@ -63,13 +70,13 @@ interface IPlugin : UrlResolver {
      *
      * @param mediaCategory one of [.mediaCategories]
      * @param path path in the category
-     * @param callback callback with the results
      * @param refresh reset state and perform a new query
+     * @return List of media item results
      * @throws Exception any type of exceptions that can occur for the request in the plugin
      */
     @Throws(Exception::class)
-    fun getMediaItems(mediaCategory: String, path: String, callback: Callback<List<MediaMetadataCompat>>, refresh: Boolean = false) {
-        callback.onResult(emptyList())
+    fun getMediaItems(mediaCategory: String, path: String, refresh: Boolean = false): List<MediaItem> {
+        return emptyList()
     }
 
     /**
@@ -79,25 +86,39 @@ interface IPlugin : UrlResolver {
      * @param mediaCategory one of [.mediaCategories]
      * @param path path in the category
      * @param query search string
-     * @param callback callback with the results
      * @param refresh reset state and perform a new query
+     * @return List of media item results
      * @throws Exception any type of exceptions that can occur for the request in the plugin
      */
     @Throws(Exception::class)
-    fun getMediaItems(mediaCategory: String, path: String, query: String, callback: Callback<List<MediaMetadataCompat>>, refresh: Boolean = false) {
-        callback.onResult(emptyList())
+    fun getMediaItems(mediaCategory: String, path: String, query: String, type: String, refresh: Boolean = false): List<MediaItem> {
+        return emptyList()
     }
 
     /**
      * Request to toggle favorite status for a given id.
      *
      * @param id media id
-     * @param callback callback with status
+     * @return true if success, false otherwise
      * @throws Exception any type of exceptions that can occur for the request in the plugin
      */
     @Throws(Exception::class)
-    fun favorite(id: String, callback: Callback<Boolean>) {
-        callback.onResult(false)
+    fun favorite(id: String): Boolean {
+        return false
+    }
+
+
+    /**
+     * Request search suggestions for a given category and query string
+     *
+     * @param category search category
+     * @param query search query
+     * @return List of search suggestions
+     * @throws Exception any type of exceptions that can occur for the request in the plugin
+     */
+    @Throws(Exception::class)
+    fun getSuggestions(category: String, query: String): List<String> {
+        return emptyList()
     }
 
     /**
@@ -107,5 +128,10 @@ interface IPlugin : UrlResolver {
      */
     fun getIcon(): Bitmap
 
+    /**
+     * List of registered callbacks that are handled by the plugin
+     *
+     * @return Map of callback name to callback function
+     */
     fun callbacks(): Map<String, (callback: String) -> Unit> = emptyMap()
 }

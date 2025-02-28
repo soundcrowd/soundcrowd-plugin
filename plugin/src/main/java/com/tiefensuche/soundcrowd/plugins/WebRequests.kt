@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-package com.tiefensuche.soundcrowd.extensions
+package com.tiefensuche.soundcrowd.plugins
 
 import java.io.BufferedReader
 import java.io.IOException
@@ -10,10 +10,6 @@ import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
 object WebRequests {
-
-    @get:Synchronized
-    @set:Synchronized
-    var cookies = ""
 
     class Response(val status : Int, val value : String)
 
@@ -53,10 +49,6 @@ object WebRequests {
         con.instanceFollowRedirects = false
         con.connectTimeout = 30 * 1000 // 30s
         con.readTimeout = 30 * 1000 // 30s
-
-        if (cookies.isNotEmpty()) {
-            con.setRequestProperty("Cookie", cookies)
-        }
 
         return con
     }
